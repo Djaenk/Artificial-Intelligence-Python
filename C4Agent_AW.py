@@ -218,6 +218,7 @@ def agent(board, player='x'):
     if move_count != 0 and move_count < 8:
         move, _ = good_move(board, player)
     else:
-        move = simulate(board, player, N=move_count*1000)
+        move = simulate(board, player)
+    drop(board, player, move)
     #print(time.time() - start)
     return move
