@@ -108,7 +108,7 @@ def other(player):
 
 # Heuristic functions
 
-@lru_cache
+@lru_cache(maxsize=1024)
 def heuristic_pattern(char, orientation, cols, length, space):
     o = orientation % 180
     if o == 0:    o = cols
@@ -118,7 +118,7 @@ def heuristic_pattern(char, orientation, cols, length, space):
     pattern = '(?=' + (char + '.' * (cols - o)) * space + ' ' + ('.' * (cols - o) + char) * (length - space - 1) + ')'
     return pattern
 
-@np_cache(maxsize=2**19)
+@np_cache(maxsize=2**20)
 def evaluate(board, player='x', length=4):
     """Heuristic for the utility of the board. Returns the score.
 
@@ -143,7 +143,7 @@ def evaluate(board, player='x', length=4):
 
 # Heuristic Alpha-Beta Search algorithm functions
 
-def good_move(board, player, alpha=-math.inf, beta=+math.inf, depth=0, cutoff=8):
+def good_move(board, player, alpha=-math.inf, beta=+math.inf, depth=0, cutoff=7):
     """Returns heuristically best move of player and its value"""
     value, terminal = evaluate(board, player)
     if depth > cutoff or terminal:
@@ -159,7 +159,7 @@ def good_move(board, player, alpha=-math.inf, beta=+math.inf, depth=0, cutoff=8)
         if value >= beta: return move, value
     return move, value
 
-def bad_move(board, player, alpha=-math.inf, beta=+math.inf, depth=0, cutoff=8):
+def bad_move(board, player, alpha=-math.inf, beta=+math.inf, depth=0, cutoff=7):
     """Returns heuristically best move of player and its value"""
     value, terminal = evaluate(board, player)
     if terminal:
@@ -210,15 +210,16 @@ def simulate(board, player='x', N=10000):
 
 # Connect Four Agent
 
-#import time
+import time
 
 def agent(board, player='x'):
-    #start = time.time()
+    start = time.time()
     move_count = np.count_nonzero(board == player)
     move = board.shape[1] // 2
     if move_count != 0 and move_count < 8:
         move, _ = good_move(board, player)
-    else:
+    elif move_count >= 8:
         move = simulate(board, player)
-    #print(time.time() - start)
+    drop(board, player, move)
+    print(time.time() - start)
     return move
