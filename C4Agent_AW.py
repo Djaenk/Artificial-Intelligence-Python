@@ -36,6 +36,7 @@ def drop(board, piece, column, inplace=True):
             row[column] = piece
             return board_
 
+@np_cache(maxsize=2**20)
 def utility(board, player, length=4):
     """Determines utility of board for player if terminal"""
     state = terminal(board, length)
@@ -79,7 +80,7 @@ def terminal(board, length=4, last_move=None):
         return 'draw'
 
     # if none of previous conditions are satisfied,
-    # board is not in terminal state.
+    # board is not in state.
     return None
 
 line_counts = {
@@ -219,6 +220,5 @@ def agent(board, player='x'):
         move, _ = good_move(board, player)
     else:
         move = simulate(board, player)
-    drop(board, player, move)
     #print(time.time() - start)
     return move
