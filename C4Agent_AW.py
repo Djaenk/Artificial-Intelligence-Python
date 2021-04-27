@@ -210,16 +210,15 @@ def simulate(board, player='x', N=10000):
 
 # Connect Four Agent
 
-import time
+#import time
 
 def agent(board, player='x'):
-    start = time.time()
+    #start = time.time()
     move_count = np.count_nonzero(board == player)
     move = board.shape[1] // 2
     if move_count != 0 and move_count < 8:
         move, _ = good_move(board, player)
     elif move_count >= 8:
         move = simulate(board, player)
-    drop(board, player, move)
-    print(time.time() - start)
+    #print(time.time() - start)
     return move
